@@ -7,6 +7,7 @@ const bundle = require("less-bundle-promise");
 const hash = require("hash.js");
 const NpmImportPlugin = require('less-plugin-npm-import');
 const colorsOnly = require('postcss-colors-only');
+const { getThemeVariables } = require('antd/dist/theme');
 
 const options = {
   withoutGrey: true, // set to true to remove rules that only have grey colors
@@ -193,6 +194,29 @@ function getLessVars(filtPath) {
 }
 
 /*
+  These two functions merge our custom theme variables and our Antd Themes such as, Dark and Compact.
+*/
+const formatThemeVars = (antdVars) => Object.keys(antdVars).reduce((acc, key) => {
+  if (key !== 'hack') acc[`@${key}`] = antdVars[key];
+  return acc;
+}, {});
+
+function mergeThemeVars(themeVariables = ["@primary-color"], antdThemes) {
+  const antdThemeVars = formatThemeVars(getThemeVariables(antdThemes));
+  return [...Object.keys(antdThemeVars), ...themeVariables];
+}
+
+// function generateThemeJsonFiles(themeVariables, antdThemes, stylesDir) {
+//   Object.keys(antdThemes).forEach((key) => {
+//     if(key) {
+//       const theme = getThemeVariables({ [key]: true });
+//       fs.writeFileSync(path.join(stylesDir, `${key}.json`), theme);
+//     }
+//   })
+//   // return;
+// };
+
+/*
   This function take primary color palette name and returns @primary-color dependent value
   .e.g 
   Input: @primary-1
@@ -271,6 +295,7 @@ function generateTheme({
   outputFilePath,
   cssModules = false,
   themeVariables = ['@primary-color'],
+  antdThemes = {},
   customColorRegexArray = []
 }) {
   return new Promise((resolve, reject) => {
@@ -317,7 +342,8 @@ function generateTheme({
     }
     hashCache = hashCode;
     let themeCompiledVars = {};
-    let themeVars = themeVariables || ["@primary-color"];
+    // let themeVars = themeVariables || ["@primary-color"];
+    let themeVars = mergeThemeVars(themeVariables, antdThemes);
     const lessPaths = [
       path.join(antdPath, "./style"),
       stylesDir
@@ -378,6 +404,13 @@ function generateTheme({
           .then(({ css }) => [css, mappings, colorsLess]);
       })
       .then(([css, mappings, colorsLess]) => {
+        Object.keys(antdThemes).forEach((key) => {
+          if(key) {
+            const theme = formatThemeVars(getThemeVariables({ [key]: true }));
+            fs.writeFileSync(path.join(stylesDir, `${key}.json`), JSON.stringify(theme));
+          }
+        })
+
         Object.keys(themeCompiledVars).forEach(varName => {
           let color;
           if (/(.*)-(\d)/.test(varName)) {
