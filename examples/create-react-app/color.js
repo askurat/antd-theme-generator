@@ -1,5 +1,5 @@
 const path = require('path');
-const { generateTheme, getLessVars } = require('antd-theme-generator');
+const { generateTheme, getLessVars } = require('@taruks/antd-theme-generator');
 
 const options = {
   stylesDir: path.join(__dirname, './src/styles'),

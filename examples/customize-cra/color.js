@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { generateTheme, getLessVars } = require('antd-theme-generator');
+const { generateTheme, getLessVars } = require('@taruks/antd-theme-generator');
 
 const defaultVars = getLessVars('./node_modules/antd/lib/style/themes/default.less')
 const darkVars = { ...getLessVars('./node_modules/antd/lib/style/themes/dark.less'), '@primary-color': defaultVars['@primary-color'] };
