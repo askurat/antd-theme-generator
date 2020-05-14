@@ -309,7 +309,8 @@ function generateTheme({
       const customStyles = fs.readFileSync(mainLessFile).toString();
       content += `\n${customStyles}`;
     }
-    const hashCode = hash.sha256().update(content).digest('hex');
+    const readVarFile = fs.readFileSync(varFile).toString();
+    const hashCode = hash.sha256().update(`${content}\n${readVarFile}`).digest('hex');
     if(hashCode === hashCache){
       resolve(cssCache);
       return;
