@@ -49,4 +49,8 @@ window.less.modifyVars({
 })
 ```
 
-There will also be theme variable json files created for each theme. For example: { dark: true, compact: true, custom: { @primary: '#1890ff' } }. This will produce 3 json files, defaultVars, darkVars, and compactVars, in your styles directory. They can be used by less.modifyVars.
+There will also be theme variable json files created for each theme. For example: 
+```
+{ dark: true, compact: true, custom: { @primary: '#1890ff' } }
+```
+This will produce 3 json files, defaultVars, darkVars, and compactVars, in your styles directory. They can be used by less.modifyVars.
