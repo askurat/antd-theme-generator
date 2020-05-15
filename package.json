@@ -1,6 +1,6 @@
 {
   "name": "@taruks/antd-theme-generator",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "This a script to generate color specific styles less file and which you can use to change theme dynamically in browser",
   "main": "index.js",
   "scripts": {
