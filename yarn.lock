@@ -64,6 +64,23 @@
     postcss-colors-only "0.0.3"
     react-color "^2.18.1"
 
+"@taruks/antd-theme-generator@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@taruks/antd-theme-generator/-/antd-theme-generator-2.0.0.tgz#580b2583e6c304be8d9116e5c544ef9bc1094b82"
+  integrity sha512-MSAQTfBe91bfI0gSMWaiI8GTw4zxTAWna/WOI+2w0J13oQ7qZlt8B39F2nDzDjtVF8WMZOOQaqO56Tr6M5vPfw==
+  dependencies:
+    "@ant-design/icons" "^4.1.0"
+    "@taruks/antd-theme-generator" "^1.2.3"
+    antd "^4.2.2"
+    glob "^7.1.6"
+    hash.js "^1.1.7"
+    less "^3.11.1"
+    less-bundle-promise "1.0.7"
+    less-plugin-npm-import "^2.1.0"
+    postcss "^7.0.30"
+    postcss-colors-only "0.0.3"
+    react-color "^2.18.1"
+
 "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
