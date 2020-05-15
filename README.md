@@ -12,7 +12,7 @@ const options = {
   stylesDir: path.join(__dirname, './src/styles'),
   varFile: path.join(__dirname, './src/styles/variables.less'), // default path is Ant Design default.less file
   mainLessFile: path.join(__dirname, './src/styles/index.less'),
-  themeVariables: { custom: { primary: '#1890ff' } }, // can use { dark: true, compact: true } for Antd themes. All them variables will be merged.
+  themeVariables: { dark: true, compact: true }, // can use { dark: true, compact: true } for Antd themes. All them variables will be merged including your varFile.
   outputFilePath: path.join(__dirname, './public/color.less') // if provided, file will be created with generated less/styles
   customColorRegexArray: [/^fade\(.*\)$/], // an array of regex codes to match your custom color variable values so that code can identify that it's a valid color. Make sure your regex does not adds false positives.
 }
@@ -51,6 +51,6 @@ window.less.modifyVars({
 
 There will also be theme variable json files created for each theme. For example: 
 ```
-{ dark: true, compact: true, custom: { @primary: '#1890ff' } }
+{ dark: true, compact: true }
 ```
 This will produce 3 json files, defaultVars, darkVars, and compactVars, in your styles directory. They can be used by less.modifyVars.

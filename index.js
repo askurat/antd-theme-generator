@@ -340,8 +340,8 @@ function generateTheme({
       const customStyles = fs.readFileSync(mainLessFile).toString();
       content += `\n${customStyles}`;
     }
-    const readVarFile = fs.readFileSync(varFile).toString();
-    const hashCode = hash.sha256().update(`${content}\n${readVarFile}`).digest('hex');
+    const customThemeVariables = lessToJS(fs.readFileSync(varFile, 'utf8'));
+    const hashCode = hash.sha256().update(`${content}\n${JSON.stringify(customThemeVariables)}`).digest('hex');
     if(hashCode === hashCache){
       resolve(cssCache);
       return;
@@ -349,7 +349,7 @@ function generateTheme({
     hashCache = hashCode;
     let themeCompiledVars = {};
     // let themeVars = themeVariables || ["@primary-color"];
-    let themeVars = mergeThemeVars(themeVariables);
+    let themeVars = mergeThemeVars({ ...themeVariables, custom: { ...customThemeVariables } });
     const lessPaths = [
       path.join(antdPath, "./style"),
       stylesDir
@@ -410,14 +410,14 @@ function generateTheme({
           .then(({ css }) => [css, mappings, colorsLess]);
       })
       .then(([css, mappings, colorsLess]) => {
-        fs.writeFileSync(path.join(stylesDir, 'defaultVars.json'), JSON.stringify({ ...themeCompiledVars,  ...themeVariables.custom }));
+        fs.writeFileSync(path.join(stylesDir, 'defaultVars.json'), JSON.stringify({ ...themeCompiledVars, ...customThemeVariables }));
         Object.keys(themeVariables).forEach((key) => {         
           let antdThemeVars = {}; 
           if (themeVariables[key] === true) {
             antdThemeVars = formatThemeVars(getThemeVariables({ [key]: true }));
           };
 
-          if (key !== 'custom') fs.writeFileSync(path.join(stylesDir, `${key}Vars.json`), JSON.stringify({ ...antdThemeVars, ...themeVariables.custom }));
+          if (key !== 'custom') fs.writeFileSync(path.join(stylesDir, `${key}Vars.json`), JSON.stringify({ ...antdThemeVars, ...customThemeVariables }));
         });
 
         Object.keys(themeCompiledVars).forEach(varName => {
