@@ -201,20 +201,27 @@ const formatThemeVars = (antdVars) => Object.keys(antdVars).reduce((acc, key) =>
   return acc;
 }, {});
 
-function mergeThemeVars(themeVariables = ["@primary-color"], antdThemes) {
-  const antdThemeVars = formatThemeVars(getThemeVariables(antdThemes));
-  return [...Object.keys(antdThemeVars), ...themeVariables];
-}
+// function mergeThemeVars(themeVariables = ["@primary-color"], antdThemes) {
+//   const antdThemeVars = formatThemeVars(getThemeVariables(antdThemes));
+//   return [...Object.keys(antdThemeVars), ...themeVariables];
+// }
 
-// function generateThemeJsonFiles(themeVariables, antdThemes, stylesDir) {
-//   Object.keys(antdThemes).forEach((key) => {
-//     if(key) {
-//       const theme = getThemeVariables({ [key]: true });
-//       fs.writeFileSync(path.join(stylesDir, `${key}.json`), theme);
-//     }
-//   })
-//   // return;
-// };
+function mergeThemeVars(themeVariables) {
+  const themeVars = Object.keys(themeVariables).reduce((acc, key) => {
+  if (themeVariables[key] === true) {
+    const antdThemeVars = formatThemeVars(getThemeVariables({ [key]: true}));
+    return [ ...acc, ...Object.keys(antdThemeVars) ];
+  } else if (themeVariables[key] === false) {
+    return acc;
+  };
+
+  if (Object.keys(themeVariables[key]).length === 0) return [ ...acc, '@primary-color'];
+
+  return [ ...acc, ...Object.keys(themeVariables[key]) ];
+  }, []);
+
+  return themeVars;
+}
 
 /*
   This function take primary color palette name and returns @primary-color dependent value
@@ -294,8 +301,7 @@ function generateTheme({
   varFile,
   outputFilePath,
   cssModules = false,
-  themeVariables = ['@primary-color'],
-  antdThemes = {},
+  themeVariables = { custom: {} },
   customColorRegexArray = []
 }) {
   return new Promise((resolve, reject) => {
@@ -343,7 +349,7 @@ function generateTheme({
     hashCache = hashCode;
     let themeCompiledVars = {};
     // let themeVars = themeVariables || ["@primary-color"];
-    let themeVars = mergeThemeVars(themeVariables, antdThemes);
+    let themeVars = mergeThemeVars(themeVariables);
     const lessPaths = [
       path.join(antdPath, "./style"),
       stylesDir
@@ -404,12 +410,15 @@ function generateTheme({
           .then(({ css }) => [css, mappings, colorsLess]);
       })
       .then(([css, mappings, colorsLess]) => {
-        Object.keys(antdThemes).forEach((key) => {
-          if(key) {
-            const theme = formatThemeVars(getThemeVariables({ [key]: true }));
-            fs.writeFileSync(path.join(stylesDir, `${key}.json`), JSON.stringify(theme));
-          }
-        })
+        fs.writeFileSync(path.join(stylesDir, 'defaultVars.json'), JSON.stringify({ ...themeCompiledVars,  ...themeVariables.custom }));
+        Object.keys(themeVariables).forEach((key) => {         
+          let antdThemeVars = {}; 
+          if (themeVariables[key] === true) {
+            antdThemeVars = formatThemeVars(getThemeVariables({ [key]: true }));
+          };
+
+          if (key !== 'custom') fs.writeFileSync(path.join(stylesDir, `${key}Vars.json`), JSON.stringify({ ...antdThemeVars, ...themeVariables.custom }));
+        });
 
         Object.keys(themeCompiledVars).forEach(varName => {
           let color;
