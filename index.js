@@ -4,6 +4,7 @@ const glob = require("glob");
 const postcss = require("postcss");
 const less = require("less");
 const bundle = require("less-bundle-promise");
+const lessToJS = require('less-vars-to-js');
 const hash = require("hash.js");
 const NpmImportPlugin = require('less-plugin-npm-import');
 const colorsOnly = require('postcss-colors-only');
